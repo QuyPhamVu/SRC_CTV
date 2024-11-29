@@ -1,58 +1,59 @@
-/* 
-    + What is the purpose of this program: 
-    ...Write your answer here...
-    the programme defines whether a number is a prime number or not and turns their forms into binary
-    + Determine the features of function: 
-    ...What is the function doing... Leave the comment on the top of the function
-
-    + There may be some logic errors of this program, Debug and leave the comment of where you fix.
-*/
-
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-//how to define a prime number
-int isPrime(int num) {
-    if (num <= 1) return 0; // prime number has to be bigger than 1
-    for (int i = 2; i * i <= num; i++) {
-        if (num % i == 0) return 0; 
-    }
-    return 1; 
+#define MAX_NAME_LENGTH 50
+#define MAX_CLASS_LENGTH 10
+
+typedef struct {
+    char name[MAX_NAME_LENGTH];
+    char className[MAX_CLASS_LENGTH];
+    int id;
+    char username[MAX_NAME_LENGTH + 10];
+} Student;
+
+void createUsername(Student* student) {
+    sprintf(student->username, "%s.%d", student->name, student->id);
 }
 
-//how to convert demical form to binary form
-void printBinary(int num) { 
-    if (num > 1) { // consider number bigger than 1
-        printBinary(num / 2); 
+void displayStudents(Student* students, int count) {
+    printf("\n%-20s %-10s %-10s %-20s\n", "Name", "Class", "ID", "Username");
+    printf("-------------------------------------------------------------\n");
+    for (int i = 0; i < count; i++) {
+        printf("%-20s %-10s %-10d %-20s\n",
+               students[i].name, students[i].className, students[i].id, students[i].username);
     }
-    printf("%d", num % 2); 
 }
 
-//set value of N 
-int main() {
-    int N;
-    printf("Nhập giá trị N: ");
-    scanf("%d", &N);
+    int main() {
+    int n;
+    printf("Enter the number of students: ");
+    scanf("%d", &n);
 
-    int *primes = (int *)malloc(N * sizeof(int)); 
-    int count = 0;
-
-   //count prime numbers satisfy the condition
-    for (int i = 2; i < N; i++) {
-        if (isPrime(i)) {
-            primes[count++] = i;
-        }
+    Student* students = (Student*)malloc(n * sizeof(Student));
+    if (students == NULL) {
+        printf("Memory allocation failed!\n");
+        return 1;
     }
 
-    //print the result
-    printf("Cac so nguyen to nho hon %d la:\n", N);
-    for (int i = 0; i < count; i++) { // i has to be < count then the loop would run
-        printf("%d: ", primes[i]);
-        printBinary(primes[i]); //primes[i+1] could cause an "out-of-bounds" error
-        printf("\n");
+    for (int i = 0; i < n; i++) {
+        printf("\nEnter information for student %d:\n", i + 1);
+
+        printf("Name: ");
+        scanf(" %[^\n]s", students[i].name); 
+
+        printf("Class: ");
+        scanf("%s", students[i].className);
+
+        printf("ID: ");
+        scanf("%d", &students[i].id);
+
+        createUsername(&students[i]);
     }
 
-    free(primes); 
+    displayStudents(students, n);
+
+    free(students);
+
     return 0;
 }
